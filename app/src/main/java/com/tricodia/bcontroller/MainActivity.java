@@ -159,40 +159,25 @@ public class MainActivity extends AppCompatActivity {
 
                 iStream = mmSocket.getInputStream();
                 String mainString = "";
+                Boolean start = false;
                 while (iStream != null) {
-
 
                     String s = read();
                     Log.i("GOT ++++++++++++",s);
-                    int i = s.indexOf(';');
-                    if(i<0){
-                        mainString = mainString+s;
-                    }
-                    else {
-                        String[] strList = s.split(";");
-                        if (strList.length > 0) {
-                            String finalString = mainString+strList[0];
-
-                            for(int k=1;k<strList.length-1;k++){
-                                finalString=finalString+"\n"+strList[k];
-                            }
-
-                            if(s.lastIndexOf(';')==(s.length()-1)){
-                                mainString = "";
-                            }
-                            else{
-                                mainString=strList[strList.length-1];
-                            }
-                            if (finalString.length() > 0) {
-                                Log.i("String ++++++++++++", finalString);
-                                logMessage(finalString);
-                            }
-
+                    char[] schar = s.toCharArray();
+                    for (char c:schar){
+                        if(c == ';'){
+                            if(start)
+                                start = false;
+                            else
+                                start = true;
                         }
-                        else{
-                            Log.i("String ++++++++++++",mainString);
+                        if(!start){
                             logMessage(mainString);
                             mainString="";
+                        }
+                        else if(c != ';'){
+                            mainString = mainString+c;
                         }
                     }
                 }
